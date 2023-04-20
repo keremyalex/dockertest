@@ -130,6 +130,7 @@ class EventController extends Controller
 
             return redirect()->route('events.index')->with('success', 'El evento se ha creado correctamente.');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             // Elimina el registro del evento si la creación falla
             if ($event && $event->id) {
                 $event->delete();
