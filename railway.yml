@@ -1,0 +1,6 @@
+build:
+  commands:
+    - NIXPKGS_ALLOW_UNFREE=1 NIXPACKS_BUILD_CMD="nix-shell --run 'composer install'"
+
+env:
+  NIXPKGS_ALLOW_UNFREE: 1
