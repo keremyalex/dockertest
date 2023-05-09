@@ -23,7 +23,7 @@ class Event extends Model
 
     public function suscriptions()
     {
-        return $this->hasMany(Suscription::class);
+        return $this->hasMany(Subscription::class);
     }
 
 }

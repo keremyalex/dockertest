@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -11,8 +12,51 @@ class EventController extends Controller
 {
     public function index()
     {
+        $id_user = auth()->id();
+        if(Subscription::where('user_id', $id_user)->exists()){ //Busca si el usuario tiene suscripciones
+            $suscriptions = Subscription::where('user_id', $id_user)->get(); //Guarda las suscripciones del usuario
+//            dd($suscriptions);
+            $temporal = [];
+            foreach ($suscriptions as $suscription) {
+                $suscription = Event::where('id', $suscription->event_id)->first(); //Guarda los eventos de las suscripciones del usuario
+                $temporal[] = $suscription;
+
+            }
+        }
+        else{
+//            $suscriptions = null;
+//            return 'No tienes subs';
+
+            $events = Event::all();
+            foreach ($events as $event) {
+                $event->image = Storage::disk('s3')->url($event->image);
+                $event->subscription = false;
+            }
+            return view('events.index', compact('events'));
+        }
+
+
+//        return $suscriptions;
+//        return $temporal;
         $events = Event::all();
-//        dd($events);
+
+        foreach ($events as $event) {
+            $event->image = Storage::disk('s3')->url($event->image);
+        }
+
+        $eventIds = collect($temporal)->pluck('id');
+
+        foreach ($events as $event) {
+            if ($eventIds->contains($event->id)) {
+//                $event->status = "active";
+                $event->subscription = true;
+            } else {
+//                $event->status = "cancelled";
+                $event->subscription = false;
+            }
+        }
+
+
         return view('events.index', compact('events'));
     }
 
@@ -32,54 +76,6 @@ class EventController extends Controller
             'image' => 'required|image',
         ]);
 
-//        $event = new Event();
-//        $event->name = $request->input('name');
-//        $event->description = $request->input('description');
-//        $event->location = $request->input('location');
-//        $event->date = $request->input('date');
-//        $event->time = $request->input('time');
-//        $event->user_id = auth()->user()->id;
-//
-//        try {
-//            // Subir imagen de portada del evento
-//            if ($request->hasFile('image')) {
-//                $file = $request->file('image');
-//                $extension = $file->getClientOriginalExtension();
-//                $filename = uniqid() . '.' . $extension;
-//                $filePath = 'events/' . $event->id . '/cover/' . $filename;
-//                Storage::disk('s3')->put($filePath, file_get_contents($file));
-//                $event->image = $filePath;
-//            }
-//
-//            // Generar código QR
-//            $qrCodeData = [
-//                'name' => $event->name,
-//                'description' => $event->description,
-//                'location' => $event->location,
-//                'date' => $event->date,
-//                'time' => $event->time,
-//            ];
-//            $qrCodeString = json_encode($qrCodeData);
-//            $qrCodePath = 'events/' . $event->id . '/qr/' . uniqid() . '.png';
-//
-//            Storage::disk('s3')->put($qrCodePath, QrCode::format('png')->size(300)->generate($qrCodeString));
-//            $event->qr_code = $qrCodePath;
-//
-//            // Guardar evento en la base de datos
-//            $event->save();
-//
-//            return redirect()->route('events.index')->with('success', 'El evento se ha creado correctamente.');
-//
-//        } catch (\Exception $e) {
-////            dd($e->getMessage());
-//            // Eliminar imagen de portada del evento en caso de error
-//            if ($event->image) {
-//                Storage::disk('s3')->delete($event->image);
-//            }
-//            // Eliminar carpeta del evento en caso de error
-//            Storage::disk('s3')->deleteDirectory('events/' . $event->id);
-//            return back()->with('error', 'Error al crear el evento: ' . $e->getMessage())->withInput();
-//        }
         try {
             // Crea el registro del evento en la base de datos
             $event = new Event;
@@ -102,15 +98,6 @@ class EventController extends Controller
                 $event->image = $imagePath;
             }
 
-//            // Genera el QR y guarda el archivo en el directorio correspondiente
-//            $qrCode = QrCode::size(500)->generate('http://localhost:8000/events/' . $event->id);
-//            $qrPath = 'events/'.$event->id.'/qr/' . $fileName;
-//            Storage::disk('s3')->put($qrPath, $qrCode);
-//
-//            // Actualiza la información del evento con la ruta del QR
-//            $event->qr_code = $qrPath;
-//            $event->save();
-
             //Generar código QR
             $qrCodeData = [
                 'name' => $event->name,
@@ -130,7 +117,7 @@ class EventController extends Controller
 
             return redirect()->route('events.index')->with('success', 'El evento se ha creado correctamente.');
         } catch (\Exception $e) {
-            dd($e->getMessage());
+//            dd($e->getMessage());
             // Elimina el registro del evento si la creación falla
             if ($event && $event->id) {
                 $event->delete();
@@ -147,6 +134,16 @@ class EventController extends Controller
             // Regresa a la vista del formulario con un mensaje de error
             return back()->with('error', 'Hubo un problema al crear el evento: '.$e->getMessage());
         }
+
+
+    }
+
+    public function show($id)
+    {
+        $event = Event::findOrFail($id);
+        $event->qr_code = Storage::disk('s3')->url($event->qr_code);
+//        dd($event);
+        return view('events.show', compact('event'));
     }
 
 }

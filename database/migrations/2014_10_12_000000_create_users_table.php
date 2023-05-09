@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('user_type');
             $table->string('foto1_url');    //foto para verificar con rekognition
             $table->string('foto2_url');    //foto para verificar con rekognition
+            $table->string('face_id');
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();

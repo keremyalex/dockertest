@@ -1,41 +1,30 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace App\Http\Controllers;
 
 use App\Models\User;
-use Aws\Rekognition\Exception\RekognitionException;
 use Aws\Rekognition\RekognitionClient;
 use Aws\S3\S3Client;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Laravel\Fortify\Contracts\CreatesNewUsers;
-use Laravel\Jetstream\Jetstream;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class CreateNewUser implements CreatesNewUsers
+class ApiRegisterController extends Controller
 {
-    use PasswordValidationRules;
-
-    /**
-     * Validate and create a newly registered user.
-     *
-     * @param  array<string, string>  $input
-     */
-    public function create(array $input): User
+    public function register(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'image1' => 'required|file|image|mimes:jpeg,png,jpg',
+            'image2' => 'required|file|image|mimes:jpeg,png,jpg',
+        ]);
 
-        Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => $this->passwordRules(),
-            'foto1' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg'],
-            'foto2' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg'],
-            'user_type' => ['required', Rule::in(['organizador', 'estudio', 'cliente'])],
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
-        ])->validate();
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
         //Configuracion del AWS S3
         $s3 = new S3Client([
@@ -57,13 +46,11 @@ class CreateNewUser implements CreatesNewUsers
             ],
         ]);
 
-        $foto1 = $input['foto1'];
-        $foto2 = $input['foto2'];
+        $foto1 = $request->file('image1');
+        $foto2 = $request->file('image2');
 
-//        $nombre_con_guion = str_replace(" ", "_", $input['name']);
-        $nombre_sin_espacios = trim($input['name']);
+        $nombre_sin_espacios = trim($request->name);
         $nombre_con_guion = preg_replace('/\s+/', '_', $nombre_sin_espacios);
-
 
         try {
             $foto1Name = uniqid() . '.' . $foto1->getClientOriginalExtension();
@@ -74,8 +61,8 @@ class CreateNewUser implements CreatesNewUsers
             ]);
 
 //            $foto1Url = $s3->getObjectUrl(env('AWS_BUCKET'), $foto1Name);
-            $foto1Url = $s3->getObjectUrl(env('AWS_BUCKET'), 'profile/' . $nombre_con_guion . '/' . $foto1Name);
 
+            $foto1Url = $s3->getObjectUrl(env('AWS_BUCKET'), 'profile/' . $nombre_con_guion . '/' . $foto1Name);
 
             $foto2Name = uniqid() . '.' . $foto2->getClientOriginalExtension();
             $s3->putObject([
@@ -85,8 +72,8 @@ class CreateNewUser implements CreatesNewUsers
             ]);
 
 //            $foto2Url = $s3->getObjectUrl(env('AWS_BUCKET'), $foto2Name);
-            $foto2Url = $s3->getObjectUrl(env('AWS_BUCKET'), 'profile/' . $nombre_con_guion . '/' . $foto2Name);
 
+            $foto2Url = $s3->getObjectUrl(env('AWS_BUCKET'), 'profile/' . $nombre_con_guion . '/' . $foto2Name);
 
             $result = $rekognition->compareFaces([
                 'SimilarityThreshold' => 80,
@@ -120,7 +107,6 @@ class CreateNewUser implements CreatesNewUsers
                     ]);
                 }
 
-//                $externalImageId1 = uniqid();
 
 
                 $indexResult1 = $rekognition->indexFaces([
@@ -131,41 +117,32 @@ class CreateNewUser implements CreatesNewUsers
                             'Name' => 'profile/' . $nombre_con_guion . '/' . $foto2Name,
                         ],
                     ],
-//                    'ExternalImageId' => $externalImageId1,
                 ]);
 
-//                $indexResult2 = $rekognition->indexFaces([
-//                    'CollectionId' => $collectionName,
-//                    'Image' => [
-//                        'S3Object' => [
-//                            'Bucket' => env('AWS_BUCKET'),
-//                            'Name' => 'profile/' . $nombre_con_guion . '/' . $foto2Name,
-//                        ],
-//                    ],
-//                    'ExternalImageId' => $externalImageId2,
-//                ]);
 
                 $faceRecord = $indexResult1['FaceRecords'][0];
                 $faceId = $faceRecord['Face']['FaceId'];
 
+                $userData = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => $request->password,
+                    'foto1_url' => $foto1Url,
+                    'foto2_url' => $foto2Url,
+                ];
+
                 $user = User::create([
-                    'name' => $input['name'],
-                    'email' => $input['email'],
-                    'password' => Hash::make($input['password']),
-                    'user_type' => $input['user_type'],
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'user_type' => 'cliente',
                     'foto1_url' => $foto1Url,
                     'foto2_url' => $foto2Url,
                     'face_id' => $faceId,
                 ]);
 
-                //Verificar porque almaceno las 2 urls en la tabla users
-//                $user->fotos()->createMany([
-//                    ['url' => $foto1Url],
-//                    ['url' => $foto2Url],
-//                ]);
 
-
-                return $user;
+                return response()->json(['message' => 'User registered successfully', 'user' => $userData], 200);
             } else {
                 $s3->deleteObject([
                     'Bucket' => env('AWS_BUCKET'),
@@ -194,7 +171,7 @@ class CreateNewUser implements CreatesNewUsers
             ]);
 
             throw $e;
-        }
 
+        }
     }
 }

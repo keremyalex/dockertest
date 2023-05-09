@@ -32,6 +32,7 @@ class User extends Authenticatable
         'user_type',
         'foto1_url',
         'foto2_url',
+        'face_id',
     ];
 
     /**

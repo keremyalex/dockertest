@@ -45,6 +45,31 @@ class DatabaseSeeder extends Seeder
             'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
         ]);
 
+        User::factory()->create([
+            'name' => $faker->name,
+            'email' => 'test3@test.com',
+            'password' => Hash::make('password'),
+            'user_type' => 'estudio',
+            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
+            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+        ]);
+        User::factory()->create([
+            'name' => $faker->name,
+            'email' => 'test4@test.com',
+            'password' => Hash::make('password'),
+            'user_type' => 'estudio',
+            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
+            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+        ]);
+        User::factory()->create([
+            'name' => $faker->name,
+            'email' => 'test5@test.com',
+            'password' => Hash::make('password'),
+            'user_type' => 'estudio',
+            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
+            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+        ]);
+
 
         $this->call(RoleSeeder::class);
     }

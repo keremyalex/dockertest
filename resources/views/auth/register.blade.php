@@ -32,12 +32,12 @@
             <div class="form-group mt-4">
                 <label for="user_type">Tipo de usuario</label>
                 <div class="flex items-center">
-                    <input id="organizer" type="radio" name="user_type" value="organizer" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                    <input id="organizer" type="radio" name="user_type" value="organizador" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
                     <label for="organizer" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Organizador</label>
                 </div>
                 <div class="flex items-center mt-1">
-                    <input id="photographer" type="radio" name="user_type" value="photographer" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
-                    <label for="photographer" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Fotógrafo</label>
+                    <input id="photographer" type="radio" name="user_type" value="estudio" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                    <label for="photographer" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Estudio/Fotógrafo</label>
                 </div>
             </div>
 

@@ -11,6 +11,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <x-validation-errors class="mb-4" />
+                    @if(session()->has('error'))
+                        <div class="alert alert-danger">
+                            {{ session()->get('error') }}
+                        </div>
+                    @endif
 
                     <form method="POST" action="{{ route('events.store') }}" enctype="multipart/form-data">
                         @csrf
@@ -54,6 +59,9 @@
 
 
                         <div class="flex items-center justify-end mt-4">
+                            <x-button class="ml-4 text-gray-600 hover:text-gray-800" onclick="history.back()">
+                                {{ __('Cancelar') }}
+                            </x-button>
                             <x-button class="ml-4">
                                 {{ __('Crear evento') }}
                             </x-button>
