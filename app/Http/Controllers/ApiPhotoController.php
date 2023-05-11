@@ -19,7 +19,19 @@ class ApiPhotoController extends Controller
 
         $id = $user->id;
 
-        $photos_client = PhotoClient::where('user_id', $id)
+//        $photos_client = PhotoClient::where('user_id', $id)
+//            ->whereNotExists(function ($query) {
+//                $query->select(DB::raw(1))
+//                    ->from('purchases')
+//                    ->whereColumn('photo_client_id', 'photos_client.id');
+//            })
+//            ->get()
+//            ->makeHidden(['created_at', 'updated_at']);
+        $photos_client = PhotoClient::select('photos_client.*', 'events.name', 'events.date')
+            ->join('photos', 'photos.id', '=', 'photos_client.photo_id')
+            ->join('albums', 'albums.id', '=', 'photos.album_id')
+            ->join('events', 'events.id', '=', 'albums.event_id')
+            ->where('photos_client.user_id', $id)
             ->whereNotExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('purchases')
@@ -28,10 +40,18 @@ class ApiPhotoController extends Controller
             ->get()
             ->makeHidden(['created_at', 'updated_at']);
 
+//        $purchased_photos = DB::table('purchases')
+//            ->join('photos_client', 'purchases.photo_client_id', '=', 'photos_client.id')
+//            ->join('photos', 'photos_client.photo_id', '=', 'photos.id')
+//            ->select('photos_client.id', 'photos_client.photo_id', 'photos_client.user_id', 'photos.url', 'photos.url_water', )
+//            ->where('photos_client.user_id', $id)
+//            ->get();
         $purchased_photos = DB::table('purchases')
             ->join('photos_client', 'purchases.photo_client_id', '=', 'photos_client.id')
             ->join('photos', 'photos_client.photo_id', '=', 'photos.id')
-            ->select('photos_client.id', 'photos_client.photo_id', 'photos_client.user_id', 'photos.url', 'photos.url_water', )
+            ->join('albums', 'albums.id', '=', 'photos.album_id')
+            ->join('events', 'events.id', '=', 'albums.event_id')
+            ->select('photos_client.id', 'photos_client.photo_id', 'photos_client.user_id',  'events.name', 'events.date', 'photos.url', 'photos.url_water')
             ->where('photos_client.user_id', $id)
             ->get();
 

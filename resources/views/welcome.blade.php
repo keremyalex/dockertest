@@ -24,8 +24,8 @@
 <div class="container">
     <div class="row mt-5">
         <div class="col d-flex align-items-center mb-3">
-            <img src="{{ asset('img/logo.png') }}" alt="Icono" class="me-3" width="50" height="50">
-            <h1 class="mb-0 me-2">Alex Eventos</h1>
+            <img src="{{ asset('img/logo3.png') }}" alt="Icono" class="me-3" width="50" height="50">
+            <h1 class="mb-0 me-2">Social Event</h1>
             <div class="ms-auto">
                 <a href="{{ route('login') }}" class="btn btn-primary">Iniciar sesión</a>
                 <a href="{{ route('register') }}" class="btn btn-secondary">Registrarse</a>

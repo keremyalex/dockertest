@@ -15,15 +15,17 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(auth()->user()->user_type != 'cliente')
+                        <x-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
+                            {{ __('Eventos') }}
+                        </x-nav-link>
+                    @endif
 
-                    <x-nav-link href="{{ route('events.index') }}" :active="request()->routeIs('events.index')">
-                        {{ __('Eventos') }}
-                    </x-nav-link>
 
 {{--                    Temporal--}}
-                    <x-nav-link href="{{ route('photographs.index') }}" :active="request()->routeIs('photographs.index')">
-                        {{ __('Imagenes') }}
-                    </x-nav-link>
+{{--                    <x-nav-link href="{{ route('photographs.index') }}" :active="request()->routeIs('photographs.index')">--}}
+{{--                        {{ __('Imagenes') }}--}}
+{{--                    </x-nav-link>--}}
                 </div>
             </div>
 

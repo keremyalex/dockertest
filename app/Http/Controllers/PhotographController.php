@@ -78,6 +78,39 @@ class PhotographController extends Controller
         return response()->json(['message' => 'Imagen subida y almacenada con éxito en Amazon S3.']);
     }
 
+    public function uploadImage2(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $image = $request->file('file');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+        // Crear una instancia de la imagen
+        $img = Image::make($image);
+
+        // Cargar la marca de agua
+        $watermark = Image::make('img/watermark.png');
+
+//         Redimensionar la marca de agua para que ocupe casi todo el tamaño de la imagen original
+        $watermark->resize($img->width() * 0.8, null, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+
+        // Calcular las coordenadas para centrar la marca de agua
+        $x = ($img->width() - $watermark->width()) / 2;
+        $y = ($img->height() - $watermark->height()) / 2;
+
+        // Aplicar la marca de agua en el centro de la imagen original
+        $img->insert($watermark, 'top-left', $x, $y);
+
+        // Guardar la imagen con marca de agua en la carpeta "public"
+        $img->save(public_path('uploads/' . $imageName));
+
+        return response()->json(['message' => 'Imagen subida y almacenada con éxito en la carpeta public.']);
+    }
+
 
 
 }

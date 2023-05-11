@@ -8,8 +8,14 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <x-welcome />
+{{--                <x-welcome />--}}
+                <div class="text-xl font-bold">
+                    <h1>Social Event</h1>
+                </div>
+                <img src="{{ asset('img/dashboard1.jpg') }}">
+
             </div>
         </div>
     </div>
+
 </x-app-layout>

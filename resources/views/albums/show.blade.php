@@ -5,10 +5,10 @@
         </h2>
     </x-slot>
 
-    <h1>Hola desde dentro de un album</h1>
-    <h2>Evento: {{$album->event_id}}</h2>
-    <h2>Album: {{$album->id}}</h2>
-    <div class="container mx-auto bg-yellow-300">
+{{--    <h1>Hola desde dentro de un album</h1>--}}
+{{--    <h2>Evento: {{$album->event_id}}</h2>--}}
+{{--    <h2>Album: {{$album->id}}</h2>--}}
+    <div class="container mx-auto">
         <div class="container text-3xl font-semibold mx-auto py-3">
             {{$album->name}}
         </div>

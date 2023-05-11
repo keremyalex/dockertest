@@ -45,6 +45,7 @@ Route::get('/events/{event_id}', [EventController::class, 'show'])->name('events
 
 Route::get('/photographs', [PhotographController::class, 'index'])->name('photographs.index');
 Route::post('/photographs', [PhotographController::class, 'upload'])->name('photographs.upload');
+//Route::post('/photographs', [PhotographController::class, 'uploadImage2'])->name('photographs.upload');
 Route::post('/photographs', [PhotographController::class, 'watermark'])->name('photographs.watermark');
 
 
@@ -86,6 +87,46 @@ Route::get('/watermark', function () {
 
     $watermark = Image::make(public_path('img/watermark.png'))->opacity(50);
     $image->insert($watermark, 'center');
+
+    return $image->response('jpg');
+});
+Route::get('/watermark2', function () {
+    $image = Image::make(public_path('img/admin/foto1.jpg'));
+
+    // Obtener las dimensiones de la imagen original
+    $width = $image->width();
+    $height = $image->height();
+
+    // Verificar si la imagen supera los 800 píxeles en su dimensión más larga
+    if (max($width, $height) > 800) {
+        // Redimensionar la imagen a un tamaño más pequeño manteniendo su aspecto
+        $image->resize(800, null, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+    }
+
+    $watermark = Image::make(public_path('img/watermark2.png'));
+
+    // Redimensionar la marca de agua para ajustarla dentro de la imagen redimensionada
+    $maxSize = min($image->width(), $image->height()) * 0.8;
+    $watermark->resize($maxSize, $maxSize, function ($constraint) {
+        $constraint->aspectRatio();
+        $constraint->upsize();
+    });
+
+    // Calcular las coordenadas para posicionar la marca de agua en el centro de la imagen original
+    $x = ($width - $watermark->width()) / 2;
+    $y = ($height - $watermark->height()) / 2;
+
+    // Verificar la orientación de la imagen original
+    if ($width > $height) {
+        // Imagen horizontal, ajustar la posición vertical de la marca de agua
+        $y = $height - $watermark->height();
+    }
+
+    // Aplicar la marca de agua en la imagen original
+    $image->insert($watermark, 'top-left', (int)$x, (int)$y);
 
     return $image->response('jpg');
 });
