@@ -26,6 +26,21 @@
         <div class="col d-flex align-items-center mb-3">
             <img src="{{ asset('img/logo3.png') }}" alt="Icono" class="me-3" width="50" height="50">
             <h1 class="mb-0 me-2">Social Event</h1>
+            <div class="">
+                <button id="downloadButton" class="btn btn-primary inline-block rounded bg-red-400 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
+                    Descargar Aplicación
+                </button>
+
+                <script>
+                    const downloadButton = document.getElementById('downloadButton');
+                    // const fileUrl = 'https://www.example.com/archivo.pdf'; // Reemplaza con la URL de tu archivo
+                    const fileUrl = 'https://drive.google.com/uc?export=download&id=1xgWs_3zDi5m_o3sQ1czdLZ3HEIP3HwA_'; // Reemplaza con la URL de tu archivo
+
+                    downloadButton.addEventListener('click', function() {
+                        window.location.href = fileUrl;
+                    });
+                </script>
+            </div>
             <div class="ms-auto">
                 <a href="{{ route('login') }}" class="btn btn-primary">Iniciar sesión</a>
                 <a href="{{ route('register') }}" class="btn btn-secondary">Registrarse</a>
@@ -34,6 +49,7 @@
     </div>
 
 </div>
+
 <div class="container-fluid vh-100 px-md-5">
     <div class="row vh-100 px-2">
         <div class="col-md-6 d-flex align-items-center justify-content-center">

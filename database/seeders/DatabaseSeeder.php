@@ -23,8 +23,9 @@ class DatabaseSeeder extends Seeder
              'email' => 'admin@test.com',
              'password' => Hash::make('password'),
              'user_type' => 'admin',
-             'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
-             'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+             'foto1_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+             'foto2_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+             'face_id' => '123456789',
         ]);
 
         User::factory()->create([
@@ -32,8 +33,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'test1@test.com',
             'password' => Hash::make('password'),
             'user_type' => 'organizador',
-            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
-            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+            'foto1_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'foto2_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'face_id' => '123456789',
         ]);
 
         User::factory()->create([
@@ -41,8 +43,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'test2@test.com',
             'password' => Hash::make('password'),
             'user_type' => 'estudio',
-            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
-            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+            'foto1_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'foto2_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'face_id' => '123456789',
         ]);
 
         User::factory()->create([
@@ -50,24 +53,27 @@ class DatabaseSeeder extends Seeder
             'email' => 'test3@test.com',
             'password' => Hash::make('password'),
             'user_type' => 'estudio',
-            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
-            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+            'foto1_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'foto2_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'face_id' => '123456789',
         ]);
         User::factory()->create([
             'name' => $faker->name,
             'email' => 'test4@test.com',
             'password' => Hash::make('password'),
             'user_type' => 'estudio',
-            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
-            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+            'foto1_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'foto2_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'face_id' => '123456789',
         ]);
         User::factory()->create([
             'name' => $faker->name,
             'email' => 'test5@test.com',
             'password' => Hash::make('password'),
             'user_type' => 'estudio',
-            'foto1_url' => 'https://i.imgur.com/1Z1Z1Z1.jpg',
-            'foto2_url' => 'https://i.imgur.com/2Z2Z2Z2.jpg',
+            'foto1_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'foto2_url' => 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+            'face_id' => '123456789',
         ]);
 
 

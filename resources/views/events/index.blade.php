@@ -25,13 +25,18 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
             @if($events->isEmpty())
-                <h1>Hola</h1>
+                <h1>No hay eventos</h1>
             @else
                 @foreach ($events as $event)
                     <div class="h-auto block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
-                        <a href="{{route('album.index', ['event_id' => $event->id])}}">
+                        @if($event->subscription == true || auth()->user()->user_type === 'organizador')
+                            <a href="{{route('album.index', ['event_id' => $event->id])}}">
+                                <img class="rounded-t-lg" src="{{ $event->image }}" alt=""/>
+                            </a>
+                        @else
                             <img class="rounded-t-lg" src="{{ $event->image }}" alt=""/>
-                        </a>
+                        @endif
+
                         <div class="p-6">
                             <div class="flex items-center justify-between">
                                 <h5 class="mb-2 text-2xl font-bold leading-tight text-neutral-800 dark:text-neutral-50">
@@ -67,7 +72,7 @@
                                         @if($event->subscription == true)
                                             <button type="submit" class="inline-block rounded bg-red-400 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                                                     data-te-ripple-init
-                                                    data-te-ripple-color="light">
+                                                    data-te-ripple-color="light" disabled>
                                                 Suscrito
                                             </button>
                                         @else

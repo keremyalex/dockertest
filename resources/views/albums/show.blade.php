@@ -12,12 +12,14 @@
         <div class="container text-3xl font-semibold mx-auto py-3">
             {{$album->name}}
         </div>
+        @if(auth()->user()->user_type == 'estudio')
         <div class="text-2xl font-bold my-4">Subir Imágenes</div>
         <form action="{{route('photo.uploadImage', ['event_id' => $album->event_id, 'album_id' => $album->id ])}}"
               method="POST"
               class="dropzone"
               id="my-awesome-dropzone"></form>
         <div class="flex justify-end py-5">
+
             <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" type="submit" onclick="uploadFiles()">Subir imágenes</button>
             <script>
                 Dropzone.options.myAwesomeDropzone = {
@@ -39,12 +41,13 @@
                     dropzone.on("queuecomplete", function() {
                         setTimeout(function() {
                             dropzone.removeAllFiles();
+                            location.reload();
                         }, 3000);
                     });
                 }
             </script>
         </div>
-
+        @endif
         <div>
             {{--            mostrar las imagenes del evento aqui--}}
             <div class="text-2xl font-bold my-4">Imágenes del album</div>
@@ -57,8 +60,9 @@
                         </div>
                     </div>
                 @endforeach
-        </div>
+            </div>
 
+        </div>
     </div>
 
 

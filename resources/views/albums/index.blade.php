@@ -10,20 +10,20 @@
             Lista de Albums
         </div>
 
+        @if(auth()->user()->user_type === 'estudio')
+            <form method="POST" action="{{route('album.create', ['event_id' => $event->id])}}">
+                @csrf
+                <div class="flex gap-4">
+                    <label>Nuevo album:</label>
+                    <x-input name="name" type="text" class="rounded-lg" required/>
+                    <button type="submit"
+                            class="rounded bg-green-600 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white">
+                        Crear Album
+                    </button>
+                </div>
+            </form>
+        @endif
 
-        <form method="POST" action="{{route('album.create', ['event_id' => $event->id])}}">
-            @csrf
-            <div class="flex gap-4">
-                <label>Nuevo album:</label>
-                <x-input name="name" type="text" class="rounded-lg" required/>
-                <button type="submit"
-                        class="rounded bg-green-600 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white">
-                    Crear Album
-                </button>
-            </div>
-
-
-        </form>
     </div>
 
 
