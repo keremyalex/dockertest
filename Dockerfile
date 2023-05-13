@@ -1,13 +1,16 @@
-# Utiliza una imagen base con PHP y Apache
-FROM php:8.1.10-apache
+FROM php:8.1-fpm
 
-# Establece el directorio de trabajo dentro del contenedor
-WORKDIR /var/www/html
+# Instalar dependencias requeridas para las extensiones de PHP
+RUN apt-get update \
+    && apt-get install -y \
+        zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copia los archivos de tu proyecto Laravel al contenedor
-COPY . /var/www/html
+# Configurar variables de entorno para zlib
+ENV ZLIB_CFLAGS="-I/usr/include"
+ENV ZLIB_LIBS="-L/usr/lib/x86_64-linux-gnu"
 
-# Instala las extensiones de PHP necesarias
+# Instalar las extensiones de PHP requeridas
 RUN docker-php-ext-install \
     gd \
     zip \
@@ -21,20 +24,15 @@ RUN docker-php-ext-install \
     json \
     mbstring
 
-# Instala Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Copiar el código de tu proyecto a la carpeta de trabajo del contenedor
+COPY . /var/www/html
 
-# Instala las dependencias de tu proyecto Laravel
-RUN composer install --no-dev
+# Configurar los permisos adecuados para los archivos
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Establece los permisos adecuados en los directorios de almacenamiento de Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Exponer el puerto 9000 para el servidor PHP-FPM
+EXPOSE 9000
 
-# Habilita el módulo de reescritura de Apache
-RUN a2enmod rewrite
-
-# Expone el puerto 80 del contenedor
-EXPOSE 80
-
-# Define el comando para ejecutar el contenedor
-CMD ["apache2-foreground"]
+# Ejecutar el servidor PHP-FPM
+CMD ["php-fpm"]
