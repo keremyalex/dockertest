@@ -3,7 +3,7 @@ FROM php:8.1-fpm
 # Actualizar e instalar paquetes necesarios
 RUN apt-get update \
     && apt-get install -y \
-        libmagickwand-dev \
+        libcurl4-gnutls-dev \
         libpng-dev \
         libxml2-dev \
         libxslt-dev \
