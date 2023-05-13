@@ -4,11 +4,16 @@ FROM php:8.1-fpm
 RUN apt-get update \
     && apt-get install -y \
         zlib1g-dev \
+        libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar variables de entorno para zlib
 ENV ZLIB_CFLAGS="-I/usr/include"
 ENV ZLIB_LIBS="-L/usr/lib/x86_64-linux-gnu"
+
+# Configurar variables de entorno para libpng
+ENV PNG_CFLAGS="-I/usr/include/libpng16"
+ENV PNG_LIBS="-L/usr/lib/x86_64-linux-gnu"
 
 # Instalar las extensiones de PHP requeridas
 RUN docker-php-ext-install \
