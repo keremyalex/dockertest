@@ -3,9 +3,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ nuevaprueba ]
   pull_request:
-    branches: [ main ]
+    branches: [ nuevaprueba ]
 
 jobs:
 
